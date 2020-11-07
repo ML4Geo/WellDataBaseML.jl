@@ -5,6 +5,7 @@ import JLD2
 import DataFrames
 import Dates
 import WellDataBase
+import NMFk
 
 df, api, goodwells, recordlength, dates = WellDataBase.read(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008")
 
@@ -12,13 +13,13 @@ FileIO.save("data/eagleford-play-20191008.jld2", "df", df,  "api", api, "goodwel
 
 df, api, goodwells, recordlength, dates = FileIO.load("data/eagleford-play-20191008.jld2", "df", "api","goodwells",  "recordlength", "dates")
 
-oilm = WellDataBase.create_production_matrix(df, api, goodwells, dates)
+oilm, fwells = NMFk.df2matrix(df, api[goodwells], dates, :WellOil; addup=false)
 
-oils, startdates, enddates, totaloil = WellDataBase.create_production_matrix_shifted(df, api, goodwells, recordlength, dates)
+oils, startdates, enddates = NMFk.df2matrix_shifted(df, api[goodwells], recordlength, dates, :WellOil; addup=false)
 
-@JLD.save "data/eagleford-play-oil-20191008-shifted.jld" oils startdates enddates totaloil
+@JLD.save "data/eagleford-play-oil-20191008-shifted.jld" oils startdates enddates
 
-oils, startdates, enddates, totaloil = JLD.load("data/eagleford-play-20191008-oil-shifted.jld", "oils", "startdates", "enddates", "totaloil", "goodwells")
+oils, startdates, enddates = JLD.load("data/eagleford-play-20191008-oil-shifted.jld", "oils", "startdates", "enddates")
 
 NMFk.execute(oils[1:12,:], 2:10; resultdir="results-nmfk-eagleford-20191008", casefilename="oil_12", method=:simple, load=true)
 
