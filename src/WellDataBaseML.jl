@@ -7,17 +7,15 @@ import Dates
 import WellDataBase
 import NMFk
 
-df, api, goodwells, recordlength, dates = WellDataBase.read(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008")
+df, df_header, api, recordlength, dates = WellDataBase.read(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008", downselect=[:WellType=>"GAS", :Orientation=>"Horizontal"])
 
-df_header = WellDataBase.read_header(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008")
+FileIO.save("data/eagleford-play-20191008.jld2", "df", df, "df_header", df_header, "api", api, "recordlength", recordlength, "dates", dates)
 
-FileIO.save("data/eagleford-play-20191008.jld2", "df", df,  "api", api, "goodwells", goodwells, "recordlength", recordlength, "dates", dates)
+df, df_header, api, recordlength, dates = FileIO.load("data/eagleford-play-20191008.jld2", "df", "df_header", "api", "recordlength", "dates")
 
-df, api, goodwells, recordlength, dates = FileIO.load("data/eagleford-play-20191008.jld2", "df", "api","goodwells",  "recordlength", "dates")
+oilm, fwells = NMFk.df2matrix(df, api, dates, :WellOil; addup=false)
 
-oilm, fwells = NMFk.df2matrix(df, api[goodwells], dates, :WellOil; addup=false)
-
-oils, startdates, enddates = NMFk.df2matrix_shifted(df, api[goodwells], recordlength, dates, :WellOil; addup=false)
+oils, startdates, enddates = NMFk.df2matrix_shifted(df, api, recordlength, dates, :WellOil; addup=false)
 
 @JLD.save "data/eagleford-play-oil-20191008-shifted.jld" oils startdates enddates
 
@@ -48,7 +46,7 @@ for j = 1:length(ds)
 	global nw = 0
 	oil_t = Array{Float64}(undef, 0)
 	oil_p = Array{Float64}(undef, 0)
-	for (i, s) in enumerate(api[goodwells])
+	for (i, s) in enumerate(api)
 		truth = NMFk.sumnan(oils[:,i])
 		r = findlast(.!isnan.(oils[:,i]))
 		pred = sum(Oall[1:r,i])
