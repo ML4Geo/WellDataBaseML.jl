@@ -9,6 +9,8 @@ import NMFk
 
 df, api, goodwells, recordlength, dates = WellDataBase.read(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008")
 
+df_header = WellDataBase.read_header(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008")
+
 FileIO.save("data/eagleford-play-20191008.jld2", "df", df,  "api", api, "goodwells", goodwells, "recordlength", recordlength, "dates", dates)
 
 df, api, goodwells, recordlength, dates = FileIO.load("data/eagleford-play-20191008.jld2", "df", "api","goodwells",  "recordlength", "dates")
