@@ -1,12 +1,15 @@
 module WellDataBaseML
 
 import FileIO
+import JLD
 import JLD2
 import DataFrames
 import Dates
 import WellDataBase
 import NMFk
+import Mads
 
+cd("/Users/vvv/Julia/UnconventionalML.jl")
 df, df_header, api, recordlength, dates = WellDataBase.read(["csv-201908102241", "csv-201908102238", "csv-201908102239"]; location="data/eagleford-play-20191008", downselect=[:WellType=>"GAS", :Orientation=>"Horizontal"])
 
 FileIO.save("data/eagleford-play-20191008.jld2", "df", df, "df_header", df_header, "api", api, "recordlength", recordlength, "dates", dates)
@@ -18,9 +21,10 @@ syears = [2015, 2016, 2017]
 # syears = [2015]
 eyears = syears .+ stepsize
 
-NMFk.progressive(syears, eyears, startdate, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata="figures-data-eagleford", resultdir="results-nmfk-eagleford", figuredirresults="figures-nmfk-eagleford", scale=false, normalize=true)
+NMFk.progressive(syears, eyears, startdate, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata="figures-data-eagleford", resultdir="results-nmfk-eagleford", figuredirresults="figures-nmfk-eagleford", scale=false, normalize=true, plotseries=true)
 
 oilm, fwells = NMFk.df2matrix(df, api, dates, :WellOil; addup=false)
+Mads.plotseries(oilm, "figures-data/oil.png"; xaxis=collect(dates))
 
 oils, startdates, enddates = NMFk.df2matrix_shifted(df, api, recordlength, dates, :WellOil; addup=false)
 
@@ -63,8 +67,8 @@ for j = 1:length(ds)
 		end
 	end
 	r2 = NMFk.r2(oil_t, oil_p)
-	@info("Window $(ds[j]) months $(length(oil_t)) R2: r2")
-	display(NMFk.plotscatter(oil_t, oil_p; filename="figures-predictions-eagleford-20191008/oil-scatter-$(ds[j])-$(dk[j]).png", title="Oil prediction: Window $(ds[j]) months r2 = $(round(r2; sigdigits=3))", xtitle="Truth", ytitle="Prediction"))
+	@info("Window size: $(ds[j]) months;  Number of wells: $(length(oil_t)); R2: $(round(r2; sigdigits=3))")
+	display(NMFk.plotscatter(oil_t, oil_p; filename="figures-predictions-eagleford-20191008/oil-scatter-$(ds[j])-$(dk[j]).png", title="Window size: $(ds[j]) months; Number of wells: $(length(oil_t)); R2 = $(round(r2; sigdigits=3))", xtitle="Truth", ytitle="Prediction"))
 end
 
 end
