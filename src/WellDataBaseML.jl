@@ -21,7 +21,7 @@ syears = [2015, 2016, 2017]
 # syears = [2015]
 eyears = syears .+ stepsize
 
-NMFk.progressive(syears, eyears, startdate, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata="figures-data-eagleford", resultdir="results-nmfk-eagleford", figuredirresults="figures-nmfk-eagleford", scale=false, normalize=true, plotseries=true)
+NMFk.progressive(syears, eyears, startdate, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata="figures-data-eagleford", resultdir="results-nmfk-eagleford", figuredirresults="figures-nmfk-eagleford", scale=false, normalize=true, predr2plot=false, seriesplot=true)
 
 oilm, fwells = NMFk.df2matrix(df, api, dates, :WellOil; addup=false)
 Mads.plotseries(oilm, "figures-data/oil.png"; xaxis=collect(dates))
