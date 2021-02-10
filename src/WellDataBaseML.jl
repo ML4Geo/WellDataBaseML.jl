@@ -9,18 +9,20 @@ import WellDataBase
 import NMFk
 import Mads
 
-function execute(syears::AbstractVector, eyears::AbstractVector, datadirs::AbstractVector; workdir::AbstractString=".", location::AbstractString="data/eagleford-play-20191008", labels=[:WellOil], skipstring=true, cvsread=["API", "ReportDate", "WellOil", "WellGas", "WellWater"], checkzero::Bool=true, downselect::AbstractVector=[])
+function execute(syears::AbstractVector, eyears::AbstractVector, datadirs::AbstractVector; workdir::AbstractString=".", location::AbstractString="data/eagleford-play-20191008", labels=[:WellOil], skipstring=true, cvsread=["API", "ReportDate", "WellOil", "WellGas", "WellWater"], checkzero::Bool=true, downselect::AbstractVector=[], plotseries::Bool=true)
 	df, df_header, api, recordlength, dates = WellDataBase.read(datadirs; location=joinpath(workdir, location), labels=labels, skipstring=skipstring, cvsread=cvsread, checkzero=checkzero, downselect=downselect)
 
 	FileIO.save(joinpath(workdir, location) * ".jld2", "df", df, "df_header", df_header, "api", api, "recordlength", recordlength, "dates", dates)
 
 	df, df_header, api, recordlength, dates = FileIO.load(joinpath(workdir, location) * ".jld2", "df", "df_header", "api", "recordlength", "dates")
 
-	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=true)
+	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=plotseries)
+
+	return df, df_header, api, recordlength, dates
 end
 
-function execute(syears::AbstractVector, eyears::AbstractVector, df::DataFrames.DataFrame, df_header::DataFrames.DataFrame, api; workdir::AbstractString=".")
-	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=true)
+function execute(syears::AbstractVector, eyears::AbstractVector, df::DataFrames.DataFrame, df_header::DataFrames.DataFrame, api; workdir::AbstractString=".", plotseries::Bool=true)
+	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=plotseries)
 end
 
 function execute(df::DataFrames.DataFrame, df_header::DataFrames.DataFrame, api, recordlength, dates; workdir::AbstractString="/Users/vvv/Julia/UnconventionalML.jl")
