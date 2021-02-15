@@ -16,13 +16,13 @@ function execute(syears::AbstractVector, eyears::AbstractVector, datadirs::Abstr
 
 	df, df_header, api, recordlength, dates = FileIO.load(joinpath(workdir, location) * ".jld2", "df", "df_header", "api", "recordlength", "dates")
 
-	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=plotseries)
+	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, load=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=plotseries)
 
 	return df, df_header, api, recordlength, dates
 end
 
 function execute(syears::AbstractVector, eyears::AbstractVector, df::DataFrames.DataFrame, df_header::DataFrames.DataFrame, api; workdir::AbstractString=".", plotseries::Bool=true)
-	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, loading=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=plotseries)
+	NMFk.progressive(syears, eyears, df, df_header, api; nNMF=100, load=true, problem="gaswellshor-20191008", figuredirdata=joinpath(workdir, "figures-data-eagleford"), resultdir=joinpath(workdir, "results-nmfk-eagleford"), figuredirresults=joinpath(workdir, "figures-nmfk-eagleford"), scale=false, normalize=true, plotr2pred=false, plotseries=plotseries)
 end
 
 function execute(df::DataFrames.DataFrame, df_header::DataFrames.DataFrame, api, recordlength, dates; workdir::AbstractString="/Users/vvv/Julia/UnconventionalML.jl")
