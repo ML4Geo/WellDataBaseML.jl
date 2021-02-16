@@ -20,4 +20,7 @@ WellDataBaseML.execute(syears, eyears, df, df_header, api; workdir="/Users/vvv/J
 syears = [Dates.Date(2015, 6, 1)]
 eyears = syears .+ Dates.Month(4)
 
+syears = [Dates.Date(2016, 6, 1)]
+eyears = syears .+ Dates.Month(6)
+
 WellDataBaseML.execute(syears, eyears, df, df_header, api; workdir="/Users/vvv/Julia/UnconventionalML.jl", plotseries=false)
