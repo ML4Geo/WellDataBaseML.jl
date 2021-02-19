@@ -1,0 +1,1718 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{eagleford-play-20191008}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{welldatabaseml-example-predicting-well-production-within-eagle-ford-play}{%
+\subsection{WellDataBaseML example: Predicting Well production within
+Eagle Ford
+Play}\label{welldatabaseml-example-predicting-well-production-within-eagle-ford-play}}
+
+A problem demonstrating how \textbf{WellDataBaseML} can be applied to
+predict oil/gas production.
+
+The machine-lerning problem described here is related to the clasical
+history matching problems performed regularly for oil/gas exploration.
+
+If \textbf{WellDataBaseML} is not installed, first execute
+\texttt{import\ Pkg;\ Pkg.add("WellDataBaseML");\ Pkg.add("WellDataBase")}.
+
+\hypertarget{import-welldatabaseml}{%
+\subsection{Import WellDataBaseML}\label{import-welldatabaseml}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{import} \PY{n}{WellDataBaseML}
+\PY{k}{import} \PY{n}{WellDataBase}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Precompiling WellDataBaseML [b2fc4b94-a46a-4cf9-bc84-39b1d777371f]
+└ @ Base loading.jl:1278
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+HTML\{String\}("<script>\textbackslash{}n// Immediately-invoked-function-expression to avoid global variables.\textbackslash{}n(function() \{\textbackslash{}n    var warning\_div = document.getElementById(\textbackslash{}"webio-warning-6604808866375988933\textbackslash{}");\textbackslash{}n    var hide = function () \{\textbackslash{}n        var script = document.getElementById(\textbackslash{}"webio-setup-14260064878864769296\textbackslash{}");\textbackslash{}n        var parent = script \&\& script.parentElement;\textbackslash{}n        var grandparent = parent \&\& parent.parentElement;\textbackslash{}n        if (grandparent) \{\textbackslash{}n            grandparent.style.display = \textbackslash{}"none\textbackslash{}";\textbackslash{}n        \}\textbackslash{}n        warning\_div.style.display = \textbackslash{}"none\textbackslash{}";\textbackslash{}n    \};\textbackslash{}n    if (typeof Jupyter !== \textbackslash{}"undefined\textbackslash{}") \{\textbackslash{}n        console.log(\textbackslash{}"WebIO detected Jupyter notebook environment.\textbackslash{}");\textbackslash{}n        // Jupyter notebook.\textbackslash{}n        var extensions = (\textbackslash{}n            Jupyter\textbackslash{}n            \&\& Jupyter.notebook.config.data\textbackslash{}n            \&\& Jupyter.notebook.config.data.load\_extensions\textbackslash{}n        );\textbackslash{}n        if (extensions \&\& extensions[\textbackslash{}"webio-jupyter-notebook\textbackslash{}"]) \{\textbackslash{}n            // Extension already loaded.\textbackslash{}n            console.log(\textbackslash{}"Jupyter WebIO nbextension detected; not loading ad-hoc.\textbackslash{}");\textbackslash{}n            hide();\textbackslash{}n            return;\textbackslash{}n        \}\textbackslash{}n    \} else if (window.location.pathname.includes(\textbackslash{}"/lab\textbackslash{}")) \{\textbackslash{}n        // Guessing JupyterLa\textbackslash{}n        console.log(\textbackslash{}"Jupyter Lab detected; make sure the @webio/jupyter-lab-provider labextension is installed.\textbackslash{}");\textbackslash{}n        hide();\textbackslash{}n        return;\textbackslash{}n    \}\textbackslash{}n\})();\textbackslash{}n\textbackslash{}n</script>\textbackslash{}n<p\textbackslash{}n    id=\textbackslash{}"webio-warning-6604808866375988933\textbackslash{}"\textbackslash{}n    class=\textbackslash{}"output\_text output\_stderr\textbackslash{}"\textbackslash{}n    style=\textbackslash{}"padding: 1em; font-weight: bold;\textbackslash{}"\textbackslash{}n>\textbackslash{}n    Unable to load WebIO. Please make sure WebIO works for your Jupyter client.\textbackslash{}n    For troubleshooting, please see <a href=\textbackslash{}"https://juliagizmos.github.io/WebIO.jl/latest/providers/ijulia/\textbackslash{}">\textbackslash{}n    the WebIO/IJulia documentation</a>.\textbackslash{}n    <!-- TODO: link to installation docs. -->\textbackslash{}n</p>\textbackslash{}n")
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Installing pyqt package to avoid buggy tkagg backend.
+└ @ PyPlot /Users/vvv/.julia/packages/PyPlot/XHEG0/src/init.jl:118
+    \end{Verbatim}
+
+    \hypertarget{load-eagle-ford-play-datasets}{%
+\subsection{Load Eagle Ford Play
+datasets}\label{load-eagle-ford-play-datasets}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df}\PY{p}{,} \PY{n}{df\PYZus{}header}\PY{p}{,} \PY{n}{api}\PY{p}{,} \PY{n}{recordlength}\PY{p}{,} \PY{n}{dates} \PY{o}{=} \PY{n}{WellDataBase}\PY{o}{.}\PY{n}{read}\PY{p}{(}\PY{p}{[}\PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{s}\PY{l+s}{v}\PY{l+s}{\PYZhy{}}\PY{l+s}{2}\PY{l+s}{0}\PY{l+s}{1}\PY{l+s}{9}\PY{l+s}{0}\PY{l+s}{8}\PY{l+s}{1}\PY{l+s}{0}\PY{l+s}{2}\PY{l+s}{2}\PY{l+s}{4}\PY{l+s}{1}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{s}\PY{l+s}{v}\PY{l+s}{\PYZhy{}}\PY{l+s}{2}\PY{l+s}{0}\PY{l+s}{1}\PY{l+s}{9}\PY{l+s}{0}\PY{l+s}{8}\PY{l+s}{1}\PY{l+s}{0}\PY{l+s}{2}\PY{l+s}{2}\PY{l+s}{3}\PY{l+s}{8}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{c}\PY{l+s}{s}\PY{l+s}{v}\PY{l+s}{\PYZhy{}}\PY{l+s}{2}\PY{l+s}{0}\PY{l+s}{1}\PY{l+s}{9}\PY{l+s}{0}\PY{l+s}{8}\PY{l+s}{1}\PY{l+s}{0}\PY{l+s}{2}\PY{l+s}{2}\PY{l+s}{3}\PY{l+s}{9}\PY{l+s}{\PYZdq{}}\PY{p}{]}\PY{p}{;} \PY{n}{location}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{/}\PY{l+s}{U}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{/}\PY{l+s}{v}\PY{l+s}{v}\PY{l+s}{v}\PY{l+s}{/}\PY{l+s}{J}\PY{l+s}{u}\PY{l+s}{l}\PY{l+s}{i}\PY{l+s}{a}\PY{l+s}{/}\PY{l+s}{U}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{i}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{M}\PY{l+s}{L}\PY{l+s}{.}\PY{l+s}{j}\PY{l+s}{l}\PY{l+s}{/}\PY{l+s}{d}\PY{l+s}{a}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{/}\PY{l+s}{e}\PY{l+s}{a}\PY{l+s}{g}\PY{l+s}{l}\PY{l+s}{e}\PY{l+s}{f}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{d}\PY{l+s}{\PYZhy{}}\PY{l+s}{p}\PY{l+s}{l}\PY{l+s}{a}\PY{l+s}{y}\PY{l+s}{\PYZhy{}}\PY{l+s}{2}\PY{l+s}{0}\PY{l+s}{1}\PY{l+s}{9}\PY{l+s}{1}\PY{l+s}{0}\PY{l+s}{0}\PY{l+s}{8}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{downselect}\PY{o}{=}\PY{p}{[}\PY{o}{:}\PY{n}{WellType}\PY{o}{=\PYZgt{}}\PY{l+s}{\PYZdq{}}\PY{l+s}{G}\PY{l+s}{A}\PY{l+s}{S}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{o}{:}\PY{n}{Orientation}\PY{o}{=\PYZgt{}}\PY{l+s}{\PYZdq{}}\PY{l+s}{H}\PY{l+s}{o}\PY{l+s}{r}\PY{l+s}{i}\PY{l+s}{z}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+sers/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 9 LastProdDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 10 WellId --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 11 WellName --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 12 WellType --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 13 WellStatus --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 14 CurrentOperator --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 15 OriginalOperator --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 16 Field --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 17 County --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 18 State --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 19 Country --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 20 WellBoreProfile --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 21 Latitude --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 22 Longitude --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 23 BHLatitude --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 24 BHLongitude --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 25 PermitDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 26 SpudDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 27 CompletionDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 28 FirstProdDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 29 MeasuredDepth --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 30 TrueVerticalDepth --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 31 LateralLength --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 32 Basin --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 33 Play --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 34 Grid1 --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 35 Grid2 --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 36 Grid3 --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 37 Grid4 --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 38 Grid5 --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 39 StateId --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 40 StateIdDesc --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 41 ThermalMaturity --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 42 Id --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 43 PlugDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 44 PermitNumber --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 45 Lease --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 46 LeaseId --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 47 Footages --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 48 Quarter --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 49 GroundElevation --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 50 DrillingFloorElevation --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 51 KellyBushingElevation --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 52 Comments --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 53 TestDate --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 54 PrimaryFormation --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 55 ReportedCurrentOperator --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 56 ReportedOriginalOperator --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 57 ReportedField --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 58 ReportedWellboreProfile --> true
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 59 WellNumber --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: Col 60 OffshoreWaterDepth --> false
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:199
+┌ Info: File: /Users/vvv/Julia/UnconventionalML.jl/data/eagleford-
+play-20191008/csv-201908102241/csv-201908102241-Production.csv
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:19
+┌ Info: Column 1: API Type: Int64 Number of missing entries: 0
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 2: WellName Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 3: Id Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 4: WellId Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 5: ReportDate Type: Dates.Date Number of missing entries: 0
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 6: Days Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 7: Lease Type: Int32 Number of missing entries: 110 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 8: Operator Type: String Number of missing entries: 1330 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 9: WellsInLease Type: Int32 Number of missing entries: 21
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 10: Field Type: String Number of missing entries: 3863 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 11: Formation Type: String Number of missing entries: 1291
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 12: TotalOil Type: Float32 Number of missing entries: 306
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 13: LeaseOilAllowable Type: Float32 Number of missing entries:
+66765 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 14: WellOilAllowable Type: Float32 Number of missing entries:
+83771 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 15: WellOil Type: Float32 Number of missing entries: 649
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 16: TotalGas Type: Float32 Number of missing entries: 3042
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 17: LeaseGasAllowable Type: Float32 Number of missing entries:
+68620 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 18: WellGasAllowable Type: Float32 Number of missing entries:
+83722 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 19: WellGas Type: Float32 Number of missing entries: 3378
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 20: TotalWater Type: Float32 Number of missing entries: 95
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 21: WellWater Type: Float32 Number of missing entries: 93
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 22: GOR Type: Float32 Number of missing entries: 3512 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 23: ReportMonth Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 24: ReportYear Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 25: ReportedOperator Type: String Number of missing entries: 1330
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 26: ReportedFormation Type: String Number of missing entries:
+2666 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 27: InterpretedFormation Type: String Number of missing entries:
+177721 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: File: /Users/vvv/Julia/UnconventionalML.jl/data/eagleford-
+play-20191008/csv-201908102238/csv-201908102238-Production.csv
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:19
+┌ Info: Column 1: API Type: Int64 Number of missing entries: 0
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 2: WellName Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 3: Id Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 4: WellId Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 5: ReportDate Type: Dates.Date Number of missing entries: 0
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 6: Days Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 7: Lease Type: Int32 Number of missing entries: 179 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 8: Operator Type: String Number of missing entries: 2279 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 9: WellsInLease Type: Int32 Number of missing entries: 127
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 10: Field Type: String Number of missing entries: 356 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 11: Formation Type: String Number of missing entries: 1377
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 12: TotalOil Type: Float32 Number of missing entries: 227
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 13: LeaseOilAllowable Type: Float32 Number of missing entries:
+234246 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 14: WellOilAllowable Type: Float32 Number of missing entries:
+292927 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 15: WellOil Type: Float32 Number of missing entries: 710
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 16: TotalGas Type: Float32 Number of missing entries: 49 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 17: LeaseGasAllowable Type: Float32 Number of missing entries:
+234246 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 18: WellGasAllowable Type: Float32 Number of missing entries:
+292927 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 19: WellGas Type: Float32 Number of missing entries: 525
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 20: TotalWater Type: Float32 Number of missing entries: 134
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 21: WellWater Type: Float32 Number of missing entries: 128
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 22: GOR Type: Float32 Number of missing entries: 44 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 23: ReportMonth Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 24: ReportYear Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 25: ReportedOperator Type: String Number of missing entries: 2279
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 26: ReportedFormation Type: String Number of missing entries:
+1608 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 27: InterpretedFormation Type: String Number of missing entries:
+574621 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: File: /Users/vvv/Julia/UnconventionalML.jl/data/eagleford-
+play-20191008/csv-201908102239/csv-201908102239-Production.csv
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:19
+┌ Info: Column 1: API Type: Int64 Number of missing entries: 0
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 2: WellName Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 3: Id Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 4: WellId Type: String Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 5: ReportDate Type: Dates.Date Number of missing entries: 0
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 6: Days Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 7: Lease Type: Int32 Number of missing entries: 186 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 8: Operator Type: String Number of missing entries: 1152 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 9: WellsInLease Type: Int32 Number of missing entries: 156
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 10: Field Type: String Number of missing entries: 199 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 11: Formation Type: String Number of missing entries: 2870
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 12: TotalOil Type: Float32 Number of missing entries: 403
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 13: LeaseOilAllowable Type: Float32 Number of missing entries:
+203835 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 14: WellOilAllowable Type: Float32 Number of missing entries:
+266149 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 15: WellOil Type: Float32 Number of missing entries: 637
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 16: TotalGas Type: Float32 Number of missing entries: 359
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 17: LeaseGasAllowable Type: Float32 Number of missing entries:
+203835 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 18: WellGasAllowable Type: Float32 Number of missing entries:
+266149 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 19: WellGas Type: Float32 Number of missing entries: 589
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 20: TotalWater Type: Float32 Number of missing entries: 194
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 21: WellWater Type: Float32 Number of missing entries: 195
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:26
+┌ Info: Column 22: GOR Type: Float32 Number of missing entries: 287 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 23: ReportMonth Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 24: ReportYear Type: Int32 Number of missing entries: 0 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 25: ReportedOperator Type: String Number of missing entries: 1152
+SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 26: ReportedFormation Type: String Number of missing entries:
+2950 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Column 27: InterpretedFormation Type: String Number of missing entries:
+505872 SKIPPED!
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:46
+┌ Info: Number of wells: 20805
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:59
+┌ Info: Record start date: 1940-01-01
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:112
+┌ Info: Record end  date: 2019-06-01
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:113
+┌ Info: Max record length: 861 months
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:114
+┌ Info: Long well: 4249900785 (20498)
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:115
+┌ Info: Number of good wells: 561
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:137
+┌ Info: Record start date: 2004-02-01
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:139
+┌ Info: Record end  date: 2019-06-01
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:140
+┌ Info: Max record length: 185 months
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:141
+┌ Info: Long well: 4247938581 (203)
+└ @ WellDataBase /Users/vvv/Julia/WellDataBase.jl/src/WellDataBase.jl:142
+    \end{Verbatim}
+
+    The loaded data are provided in the follwoing form:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{df}: data frame containing well production transients
+\item
+  \texttt{df\_header}: data frame containing well construction
+  attributes
+\item
+  \texttt{api}: a vector with well API's listed in \texttt{df} and
+  df\_header`
+\item
+  \texttt{recordlength}: the maximum record lenght (in months) for the
+  processed well dataset
+\item
+  \texttt{dates}: range of dates for which produciton data are
+  availables (in months)
+\end{itemize}
+
+    \hypertarget{machine-learning-ml-analysis}{%
+\subsection{Machine learning (ML)
+analysis}\label{machine-learning-ml-analysis}}
+
+Machine learning (ML) analysis can be performed to predict well
+production based on this dataset.
+
+Under this example, the goal is to use all the data collected up to 2015
+for training.
+
+After that, the applied ML methodology performs blind prediction for 1
+year ahead (2015-2016).
+
+\hypertarget{setup-training-prediction-prediction-dates}{%
+\subsubsection{Setup training prediction / prediction
+dates}\label{setup-training-prediction-prediction-dates}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{syears} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{2015}\PY{p}{]}
+\PY{n}{eyears} \PY{o}{=} \PY{n}{syears} \PY{o}{.+} \PY{l+m+mi}{1}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{itemize}
+\tightlist
+\item
+  \texttt{syears}: start dates for prediction; data before the start
+  date for prediction is used for training
+\item
+  \texttt{eyears}: end dates for prediction; data after the end is
+  ignored
+\end{itemize}
+
+    \hypertarget{execute-ml-run}{%
+\subsubsection{Execute ML run}\label{execute-ml-run}}
+
+ML analyses is excuted as follows:
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{WellDataBaseML}\PY{o}{.}\PY{n}{execute}\PY{p}{(}\PY{n}{syears}\PY{p}{,} \PY{n}{eyears}\PY{p}{,} \PY{n}{df}\PY{p}{,} \PY{n}{df\PYZus{}header}\PY{p}{,} \PY{n}{api}\PY{p}{;} \PY{n}{workdir}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{/}\PY{l+s}{U}\PY{l+s}{s}\PY{l+s}{e}\PY{l+s}{r}\PY{l+s}{s}\PY{l+s}{/}\PY{l+s}{v}\PY{l+s}{v}\PY{l+s}{v}\PY{l+s}{/}\PY{l+s}{J}\PY{l+s}{u}\PY{l+s}{l}\PY{l+s}{i}\PY{l+s}{a}\PY{l+s}{/}\PY{l+s}{U}\PY{l+s}{n}\PY{l+s}{c}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{v}\PY{l+s}{e}\PY{l+s}{n}\PY{l+s}{t}\PY{l+s}{i}\PY{l+s}{o}\PY{l+s}{n}\PY{l+s}{a}\PY{l+s}{l}\PY{l+s}{M}\PY{l+s}{L}\PY{l+s}{.}\PY{l+s}{j}\PY{l+s}{l}\PY{l+s}{\PYZdq{}}\PY{p}{,} \PY{n}{plotseries}\PY{o}{=}\PY{k+kc}{true}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: 2015: Number of wells 322
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:122
+┌ Info: Training matrix size: (118, 322)
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:137
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Training start date: 2004-02-01
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:138
+┌ Info: Training end   date: 2004-02-01
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:139
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Prediction matrix size: (143, 322)
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:144
+┌ Info: Prediction start date: 2004-02-01
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:145
+┌ Info: Prediction end   date: 2004-02-01
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:146
+┌ Info: Training window: 118
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:156
+┌ Info: Prediction window: 25
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:157
+Dimension 1: No bad indices!
+Dimension 2: No bad indices!
+┌ Info: Dimension 1 {\ldots}
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkChecks.jl:78
+┌ Info: Dimension 2 {\ldots}
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkChecks.jl:78
+┌ Info: NMFk \#1: gas\_2015 Window 118
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:65
+Signals:  2 Fit: 3.739159e+12 Silhouette:    0.1872708 AIC:     214955.6
+Signals:  3 Fit: 2.436588e+12 Silhouette:    0.5115209 AIC:     211191.1
+Signals:  4 Fit: 1.811994e+12 Silhouette:    0.1589268 AIC:     208859.1
+Signals:  5 Fit: 1.341023e+12 Silhouette:   -0.2316457 AIC:     206474.8
+Signals:  2 Fit: 3.739159e+12 Silhouette:    0.1872708 AIC:     214955.6
+Signals:  3 Fit: 2.436588e+12 Silhouette:    0.5115209 AIC:     211191.1
+Signals:  4 Fit: 1.811994e+12 Silhouette:    0.1589268 AIC:     208859.1
+Signals:  5 Fit: 1.341023e+12 Silhouette:   -0.2316457 AIC:     206474.8
+┌ Info: Results
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkExecute.jl:15
+┌ Info: Optimal solution: 3 signals
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkExecute.jl:20
+┌ Info: Optimal number of signals: [2, 3] Training window sizes: [118, 118]
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:163
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Signals:  2 Fit: 3.739159e+12 Silhouette:    0.1872708 AIC:     214955.6
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_8.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_10.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_11.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_13.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_14.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_16.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_17.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_19.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_20.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_22.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_23.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_25.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_26.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_28.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_29.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_31.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_32.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_34.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_35.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_37.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_38.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_40.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_41.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_43.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_44.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_46.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_47.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_49.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_50.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Window 2015: Training size 118 Truth size: 299 Prediction size: 299 R2
+(pred): 0.6957154770204516 R2 (all) 0.8702610728541793
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:221
+┌ Info: Type A wells: 202
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:235
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_52.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_53.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Type B wells: 120
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:235
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "EAGLE FORD"  202
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Type A wells: 202
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:241
+┌ Info: Formation
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:242
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+23×2 Array\{Any,2\}:
+ "SILVERBOW RESOURCES OPER, LLC"     27
+ "LAREDO ENERGY OPERATING, LLC"      21
+ "PIONEER NATURAL RES. USA, INC."    18
+ "SM ENERGY COMPANY"                 15
+ "LEWIS PETRO PROPERTIES, INC."      14
+ "SN OPERATING, LLC"                 11
+ "ROSETTA RESOURCES OPERATING LP"     9
+ "BHP BILLITON PET(TXLA OP) CO"       8
+ "BHP BILLITON PETROLEUM"             8
+ ""                                   6
+ "BHP BILLITON PETROLEUM "            6
+ "BURLINGTON RESOURCES O \& G CO LP"   6
+ "DEVON ENERGY PRODUCTION CO, L.P."   6
+ "ESCONDIDO RESOURCES OPER CO, LLC"   6
+ "MARATHON OIL EF LLC"                6
+ "STATOIL TEXAS ONSHORE PROP LLC"     6
+ "ENCANA OIL \& GAS(USA) INC."         4
+ "EQUINOR TEXAS ONSHORE PROP LLC"     4
+ "PROLINE ENERGY RESOURCES INC"       3
+ "SWIFT ENERGY OPERATING, LLC"        3
+ "EOG RESOURCES, INC."                2
+ "PERDIDO ENERGY, LLC"                2
+ "ZAZA ENERGY, LLC"                   2
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "Horizontal"  202
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "EAGLE FORD"  120
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+19×2 Array\{Any,2\}:
+ "LEWIS PETRO PROPERTIES, INC."      32
+ "SM ENERGY COMPANY"                 11
+ "PIONEER NATURAL RES. USA, INC."    10
+ "BHP BILLITON PET(TXLA OP) CO"       7
+ "BURLINGTON RESOURCES O \& G CO LP"   7
+ "DEVON ENERGY PRODUCTION CO, L.P."   7
+ "SILVERBOW RESOURCES OPER, LLC"      7
+ "MARATHON OIL EF LLC"                4
+ "SN OPERATING, LLC"                  4
+ "STATOIL TEXAS ONSHORE PROP LLC"     4
+ "ENDEAVOR NATURAL GAS, LP"           3
+ "LAREDO ENERGY OPERATING, LLC"       3
+ "PERDIDO ENERGY, LLC"                3
+ ""                                   2
+ "BHP BILLITON PETROLEUM"             2
+ "BHP BILLITON PETROLEUM "            2
+ "ESCONDIDO RESOURCES OPER CO, LLC"   2
+ "FASKEN OIL AND RANCH, LTD."         2
+ "ROSETTA RESOURCES OPERATING LP"     2
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "Horizontal"  120
+    \end{Verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_62.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Operator
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:244
+┌ Info: Well type
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:246
+┌ Info: Type B wells: 120
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:241
+┌ Info: Formation
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:242
+┌ Info: Operator
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:244
+┌ Info: Well type
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:246
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_64.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_66.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_67.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_69.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Signals:  3 Fit: 2.436588e+12 Silhouette:    0.5115209 AIC:     211191.1
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_71.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_73.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_74.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_76.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_77.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_79.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_80.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_82.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_83.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_85.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_86.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_88.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_89.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_91.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_92.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_94.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_95.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_97.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_98.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_100.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_101.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_103.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_104.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_106.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_107.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_109.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_110.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_112.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_113.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_115.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_116.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Window 2015: Training size 118 Truth size: 299 Prediction size: 299 R2
+(pred): 0.8650471996037531 R2 (all) 0.9506983925448549
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:221
+┌ Info: Type A wells: 141
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:235
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_118.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Type B wells: 94
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:235
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_120.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Type C wells: 87
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:235
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "EAGLE FORD"  141
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+21×2 Array\{Any,2\}:
+ "LEWIS PETRO PROPERTIES, INC."      18
+ "SILVERBOW RESOURCES OPER, LLC"     16
+ "SM ENERGY COMPANY"                 12
+ "PIONEER NATURAL RES. USA, INC."    11
+ "LAREDO ENERGY OPERATING, LLC"       9
+ "SN OPERATING, LLC"                  8
+ "MARATHON OIL EF LLC"                7
+ "BHP BILLITON PET(TXLA OP) CO"       6
+ "DEVON ENERGY PRODUCTION CO, L.P."   6
+ "STATOIL TEXAS ONSHORE PROP LLC"     5
+ ""                                   4
+ "BHP BILLITON PETROLEUM"             4
+ "BURLINGTON RESOURCES O \& G CO LP"   4
+ "ENDEAVOR NATURAL GAS, LP"           4
+ "ESCONDIDO RESOURCES OPER CO, LLC"   4
+ "ROSETTA RESOURCES OPERATING LP"     4
+ "BHP BILLITON PETROLEUM "            3
+ "ENCANA OIL \& GAS(USA) INC."         2
+ "EQUINOR TEXAS ONSHORE PROP LLC"     2
+ "PERDIDO ENERGY, LLC"                2
+ "PROLINE ENERGY RESOURCES INC"       2
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "Horizontal"  141
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "EAGLE FORD"  94
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+18×2 Array\{Any,2\}:
+ "LAREDO ENERGY OPERATING, LLC"      12
+ "SILVERBOW RESOURCES OPER, LLC"     12
+ "PIONEER NATURAL RES. USA, INC."     8
+ "LEWIS PETRO PROPERTIES, INC."       7
+ "SM ENERGY COMPANY"                  7
+ "BHP BILLITON PET(TXLA OP) CO"       6
+ "BHP BILLITON PETROLEUM"             6
+ "ROSETTA RESOURCES OPERATING LP"     5
+ "BURLINGTON RESOURCES O \& G CO LP"   4
+ "SN OPERATING, LLC"                  4
+ "BHP BILLITON PETROLEUM "            3
+ ""                                   2
+ "ENCANA OIL \& GAS(USA) INC."         2
+ "EQUINOR TEXAS ONSHORE PROP LLC"     2
+ "ESCONDIDO RESOURCES OPER CO, LLC"   2
+ "MARATHON OIL EF LLC"                2
+ "STATOIL TEXAS ONSHORE PROP LLC"     2
+ "SWIFT ENERGY OPERATING, LLC"        2
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "Horizontal"  94
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "EAGLE FORD"  87
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+17×2 Array\{Any,2\}:
+ "LEWIS PETRO PROPERTIES, INC."      21
+ "PIONEER NATURAL RES. USA, INC."     9
+ "DEVON ENERGY PRODUCTION CO, L.P."   7
+ "SM ENERGY COMPANY"                  7
+ "SILVERBOW RESOURCES OPER, LLC"      6
+ "BURLINGTON RESOURCES O \& G CO LP"   5
+ "BHP BILLITON PET(TXLA OP) CO"       3
+ "LAREDO ENERGY OPERATING, LLC"       3
+ "PERDIDO ENERGY, LLC"                3
+ "SN OPERATING, LLC"                  3
+ "STATOIL TEXAS ONSHORE PROP LLC"     3
+ ""                                   2
+ "BHP BILLITON PETROLEUM "            2
+ "EOG RESOURCES, INC."                2
+ "ESCONDIDO RESOURCES OPER CO, LLC"   2
+ "FASKEN OIL AND RANCH, LTD."         2
+ "ROSETTA RESOURCES OPERATING LP"     2
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+1×2 Array\{Any,2\}:
+ "Horizontal"  87
+    \end{Verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_131.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+┌ Info: Type A wells: 141
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:241
+┌ Info: Formation
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:242
+┌ Info: Operator
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:244
+┌ Info: Well type
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:246
+┌ Info: Type B wells: 94
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:241
+┌ Info: Formation
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:242
+┌ Info: Operator
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:244
+┌ Info: Well type
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:246
+┌ Info: Type C wells: 87
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:241
+┌ Info: Formation
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:242
+┌ Info: Operator
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:244
+┌ Info: Well type
+└ @ NMFk /Users/vvv/.julia/dev/NMFk/src/NMFkProgressive.jl:246
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_133.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_135.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_136.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_138.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_139.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{eagleford-play-20191008_files/eagleford-play-20191008_9_141.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+    \end{Verbatim}
+
+    The figures and tables above represent training and prediction
+summaries.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
